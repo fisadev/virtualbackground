@@ -49,12 +49,16 @@ class Cam:
         capturer.set(cv2.CAP_PROP_FPS, self.fps)
 
         self.interface = capturer
+        logger.info("Real camera initialized at device %s, resolution %s and fps %s",
+                    self.device, self.size, self.fps)
 
     def init_fake_cam(self):
         """
         Initialize a fake camera, using pyfakewebcam to send frames to it.
         """
         self.interface = pyfakewebcam.FakeWebcam(self.device, self.width, self.height)
+        logger.info("Fake camera initialized at device %s, resolution %s",
+                    self.device, self.size)
 
     @property
     def width(self):
@@ -123,6 +127,7 @@ class SegmenterModel:
         """
         self.download_tfjs_model()
         self.graph = load_graph_model(str(self.model_path))
+        logger.info("TensorflowJS model %s loaded", self.model_name)
 
     @property
     def model_path(self):
@@ -138,7 +143,9 @@ class SegmenterModel:
         model_dir_path = self.model_path.parent
         model_dir_path.mkdir(parents=True, exist_ok=True)
 
-        if not self.model_path.exists():
+        if self.model_path.exists():
+            logger.info("TensorflowJS model found on disk")
+        else:
             logger.info("TensorflowJS model not present, will download it")
 
             logger.info("Downloading model definition...")
@@ -212,6 +219,7 @@ class VirtualBackground:
         self.current_mask = None
 
         self.load_background(background_path)
+        logger.info("Everything ready to run")
 
     def load_background(self, background_path):
         """
@@ -282,6 +290,7 @@ class VirtualBackground:
         """
         Run the virtual camera.
         """
+        logger.info("Main loop launched!")
         async def main_loop():
             """
             The main loop just stays alive while the frames and mask loops are alive.
