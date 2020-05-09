@@ -12,8 +12,6 @@ import tensorflow as tf
 from tfjs_graph_converter.api import load_graph_model
 
 
-FORMAT = '%(asctime)-15s|%(levelname)s|%(name)s|%(message)s'
-logging.basicConfig(format=FORMAT, level=logging.DEBUG)
 logger = logging.getLogger('viba')
 
 
@@ -323,11 +321,16 @@ class VirtualBackground:
               help="The tensorflowjs model that will be used to detect people in the video. If "
               "you have trouble with performance, you can try using "
               "'mobilenet_quant4_075_stride16', which is a little bit faster.")
+@click.option('--debug', is_flag=True,
+              help="Debug mode: print a lot of extra text during execution, to debug issues.")
 def main(background, use_gpu, real_cam_resolution, fake_cam_resolution, real_cam_fps,
-         real_cam_device, fake_cam_device, model_name):
+         real_cam_device, fake_cam_device, model_name, debug):
     """
     Cli script for Viba, the virtual background utility.
     """
+    FORMAT = '%(asctime)-15s|%(levelname)s|%(name)s|%(message)s'
+    logging.basicConfig(format=FORMAT, level=logging.DEBUG if debug else logging.INFO)
+
     viba = VirtualBackground(
         model=SegmenterModel(
             model_name=model_name,
