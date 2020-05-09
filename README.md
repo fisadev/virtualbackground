@@ -13,6 +13,7 @@ No nice cli, but for now you can customize devices and other params in the last 
 You will need to do some weird stuff first: adding a kernel module to be able to have "fake" webcams.
 This is done using the `v4l2loopback-dkms` package. On Debian or Ubuntu, you can install and configure it like this:
 
+```bash
     # install the virtual webcams module
     sudo apt-get install v4l2loopback-dkms
     # create a config so the module is loaded and a cam is created on boot
@@ -23,6 +24,7 @@ This is done using the `v4l2loopback-dkms` package. On Debian or Ubuntu, you can
     # enable the module for the first time
     sudo modprobe -r v4l2loopback
     sudo modprobe v4l2loopback
+```
 
 This means that from now on, you will have a `/dev/video20` device that simulates being a webcam.
 
@@ -31,18 +33,27 @@ This means that from now on, you will have a `/dev/video20` device that simulate
 Then you need to install the dependencies in the `requirements.txt` file, as usual with python. 
 A virtualenv is recommended:
 
+```bash
+    # create and activate the virtualenv
     python3.7 -m venv my_viba_venv
     source my_viba_venv/bin/activate
+    # upgrade pip, because some distros have old pips that break installations
     pip install pip --upgrade
+    # install viba requirements
     pip install -r requirements.txt
+```
 
 
 # Usage
 
 Just run the `viba.py` script, with your virtualenv activated:
 
+```bash
+    # activate viba's virtualenv
     source my_viba_venv/bin/activate
+    # run viba
     python viba.py
+```
 
 The script allows for a number of params to customize how the virtual background works:
 
