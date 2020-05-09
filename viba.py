@@ -298,7 +298,7 @@ class VirtualBackground:
               help="The background image to use in the webcam.")
 @click.option('--use-gpu', is_flag=True,
               help="Force the use of a CUDA enabled GPU, to improve performance. Remember that "
-              "this has extra dependencies, more info in the README")
+              "this has extra dependencies, more info in the README.")
 @click.option("--real-cam-resolution", default=(640, 480), type=(int, int),
               help="The resolution of the real webcam. We highly recommend using a small value "
               "because of performance reasons, specially if you aren't using a high end GPU with "
@@ -322,7 +322,7 @@ class VirtualBackground:
                                 case_sensitive=False),
               help="The tensorflowjs model that will be used to detect people in the video. If "
               "you have trouble with performance, you can try using "
-              "'mobilenet_quant4_075_stride16', which is a little bit faster")
+              "'mobilenet_quant4_075_stride16', which is a little bit faster.")
 def main(background, use_gpu, real_cam_resolution, fake_cam_resolution, real_cam_fps,
          real_cam_device, fake_cam_device, model_name):
     """
