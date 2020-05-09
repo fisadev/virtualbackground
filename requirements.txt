@@ -1,0 +1,8 @@
+numpy==1.18.3
+opencv-python==4.2.0.32
+requests==2.23.0
+pyfakewebcam==0.1.0
+tensorflow-gpu==1.15.2
+tensorflowjs==1.7.4
+tfjs-graph-converter==1.0.1
+pillow==7.1.2
