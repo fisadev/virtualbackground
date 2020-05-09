@@ -279,14 +279,23 @@ class VirtualBackground:
         mask = cv2.blur(mask.astype(float), (30, 30))
         return mask
 
-    async def run(self):
+    def run(self):
         """
         Run the virtual camera.
         """
-        await gather(self.frames_loop(), self.mask_loop())
+        async def main_loop():
+            """
+            The main loop just stays alive while the frames and mask loops are alive.
+            """
+            await gather(self.frames_loop(), self.mask_loop())
+
+        run(main_loop())
 
 
-if __name__ == '__main__':
+def main():
+    """
+    Cli script.
+    """
     viba = VirtualBackground(
         model=SegmenterModel(
             model_name='mobilenet_quant4_100_stride16',
@@ -297,5 +306,8 @@ if __name__ == '__main__':
         fake_cam=Cam(device="/dev/video20", size=(640, 480), fps=30, is_real=False),
         background_path='./sample_background.jpg',
     )
+    viba.run()
 
-    run(viba.run())
+
+if __name__ == '__main__':
+    main()
