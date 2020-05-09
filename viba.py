@@ -108,12 +108,13 @@ class SegmenterModel:
         # you can try others if you want :)
     }
 
-    def __init__(self, model_name, segmentation_threshold):
+    def __init__(self, model_name, segmentation_threshold, use_gpu):
         if model_name not in self.KNOWN_MODELS_URLS:
             raise ValueError("Uknown model: {}".format(model_name))
 
         self.model_name = model_name
         self.segmentation_threshold = segmentation_threshold
+        self.use_gpu = use_gpu
 
         self.init_graph()
 
@@ -163,7 +164,7 @@ class SegmenterModel:
         Apply the tensorflow model to get the segmentation mask outputs.
         """
         with tf.compat.v1.Session(graph=self.graph) as sess:
-            with tf.device("/gpu:0"):
+            with tf.device("/gpu:0" if self.use_gpu else "/cpu:0"):
                 input_tensor = self.graph.get_tensor_by_name('sub_2:0')
                 results = sess.run(['float_segments:0'], feed_dict={input_tensor: inputs})
 
@@ -290,6 +291,7 @@ if __name__ == '__main__':
         model=SegmenterModel(
             model_name='mobilenet_quant4_100_stride16',
             segmentation_threshold=0.7,
+            use_gpu=False,
         ),
         real_cam=Cam(device="/dev/video0", size=(640, 480), fps=30, is_real=True),
         fake_cam=Cam(device="/dev/video20", size=(640, 480), fps=30, is_real=False),
