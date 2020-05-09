@@ -100,6 +100,9 @@ Options:
                                   trouble with performance, you can try using
                                   'mobilenet_quant4_075_stride16', which is a
                                   little bit faster.
+
+  --debug                         Debug mode: print a lot of extra text during
+                                  execution, to debug issues.
 ```
 
 # Usage as a lib
