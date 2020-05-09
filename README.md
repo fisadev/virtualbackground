@@ -11,7 +11,7 @@ No nice cli, but for now you can customize devices and other params in the last 
 ### 1. Fake webcam device
 
 You will need to do some weird stuff first: adding a kernel module to be able to have "fake" webcams.
-This is done using the "v4l2loopback-dkms" package. On Debian or Ubuntu, you can install and configure it like this:
+This is done using the `v4l2loopback-dkms` package. On Debian or Ubuntu, you can install and configure it like this:
 
     sudo apt-get install v4l2loopback-dkms
     echo options v4l2loopback devices=1 video_nr=20 \
