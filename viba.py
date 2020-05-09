@@ -1,6 +1,7 @@
 import json
 import logging
 from asyncio import run, get_running_loop, sleep, gather
+from datetime import datetime
 from pathlib import Path
 
 import click
@@ -216,7 +217,9 @@ class VirtualBackground:
         self.fake_cam = fake_cam
 
         self.last_frame = None
+        self.frames_count = 0
         self.current_mask = None
+        self.masks_count = 0
 
         self.load_background(background_path)
         logger.info("Everything ready to run")
@@ -234,6 +237,8 @@ class VirtualBackground:
         Get new frames, apply the current mask and schedule them as fast as possible.
         """
         logger.info("Started frames loop")
+        last_stats_at = datetime.now()
+
         while True:
             logger.debug("Reading a new frame...")
             frame = await self.real_cam.read_frame()
@@ -248,6 +253,18 @@ class VirtualBackground:
             logger.debug("Sending the enhanced frame to the fake cam...")
             await self.fake_cam.write_frame(enhanced_frame)
 
+            self.frames_count += 1
+
+            seconds_since_stats = (datetime.now() - last_stats_at).total_seconds()
+            if seconds_since_stats >= 10:
+                logger.info("Camera working at %.2f fps, and %.2f masks per second",
+                            self.frames_count / seconds_since_stats,
+                            self.masks_count / seconds_since_stats)
+                last_stats_at = datetime.now()
+                self.frames_count = 0
+                self.masks_count = 0
+
+
     async def mask_loop(self):
         """
         Get and refresh the mask as fast as possible.
@@ -261,6 +278,8 @@ class VirtualBackground:
             logger.debug("Updating mask...")
             raw_mask = await self.model.get_mask(self.last_frame)
             self.current_mask = await self.post_process_mask(raw_mask)
+
+            self.masks_count += 1
 
     async def enhance_frame(self, frame):
         """
