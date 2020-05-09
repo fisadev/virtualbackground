@@ -4,8 +4,6 @@ Fake webcam that replaces your background with a custom image of your choice.
 
 This is a **work in progress**, although it does work if you have all the right dependencies installed.
 
-No nice cli, but for now you can customize devices and other params in the last few lines of `viba.py`.
-
 # Installation
 
 ### 1. Fake webcam device
@@ -60,7 +58,49 @@ Just run the `viba.py` script, with your virtualenv activated:
 
 The script allows for a number of params to customize how the virtual background works:
 
-**TODO**
+```man
+Options:
+  --background TEXT               The background image to use in the webcam.
+  --use-gpu                       Force the use of a CUDA enabled GPU, to
+                                  improve performance. Remember that this has
+                                  extra dependencies, more info in the README.
+
+  --real-cam-resolution <INTEGER INTEGER>...
+                                  The resolution of the real webcam. We highly
+                                  recommend using a small value because of
+                                  performance reasons, specially if you aren't
+                                  using a high end GPU with viba. The value
+                                  must be a tuple with the structure: (width,
+                                  height). Example: --real-cam-resolution 640
+                                  480
+
+  --fake-cam-resolution <INTEGER INTEGER>...
+                                  The resolution of the fake webcam. We
+                                  recommend using a small value because of
+                                  performance reasons, but this isn't as
+                                  important as the real cam resolution. Also,
+                                  useful info: some web conference services
+                                  like Jitsi ignore webcams bellow 720p. The
+                                  value must be a tuple with the structure:
+                                  (width, height). Example: --fake-cam-
+                                  resolution 640 480
+
+  --real-cam-fps INTEGER          The speed (frames per second) of the real
+                                  webcam.
+
+  --real-cam-device TEXT          The linux device in which the real cam
+                                  exists.
+
+  --fake-cam-device TEXT          The linux device in which the fake cam
+                                  exists (the one created using v4l2loopback.
+
+  --model-name [mobilenet_quant4_100_stride16|mobilenet_quant4_075_stride16]
+                                  The tensorflowjs model that will be used to
+                                  detect people in the video. If you have
+                                  trouble with performance, you can try using
+                                  'mobilenet_quant4_075_stride16', which is a
+                                  little bit faster.
+```
 
 # Usage as a lib
 
