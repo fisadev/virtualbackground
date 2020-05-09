@@ -27,7 +27,7 @@ def download_file(url, path):
 
 class Cam:
     """
-    A camera, either to read frames from (real), or to send frames to (fake).
+    A camera, either real (to read frames from), or fake (to send frames to).
     """
     def __init__(self, device, size, fps, is_real=True):
         self.device = device
