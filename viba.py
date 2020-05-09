@@ -326,7 +326,7 @@ class VirtualBackground:
 def main(background, use_gpu, real_cam_resolution, fake_cam_resolution, real_cam_fps,
          real_cam_device, fake_cam_device, model_name):
     """
-    Cli script.
+    Cli script for Viba, the virtual background utility.
     """
     viba = VirtualBackground(
         model=SegmenterModel(
