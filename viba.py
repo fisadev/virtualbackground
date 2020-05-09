@@ -3,6 +3,7 @@ import logging
 from asyncio import run, get_running_loop, sleep, gather
 from pathlib import Path
 
+import click
 import cv2
 import numpy as np
 import pyfakewebcam
@@ -292,19 +293,60 @@ class VirtualBackground:
         run(main_loop())
 
 
-def main():
+@click.command()
+@click.option("--background", default="./sample_background.jpg",
+              help="The background image to use in the webcam.")
+@click.option('--use-gpu', is_flag=True,
+              help="Force the use of a CUDA enabled GPU, to improve performance. Remember that "
+              "this has extra dependencies, more info in the README")
+@click.option("--real-cam-resolution", default=(640, 480), type=(int, int),
+              help="The resolution of the real webcam. We highly recommend using a small value "
+              "because of performance reasons, specially if you aren't using a high end GPU with "
+              "viba. The value must be a tuple with the structure: (width, height). Example: "
+              "--real-cam-resolution 640 480")
+@click.option("--fake-cam-resolution", default=(960, 720), type=(int, int),
+              help="The resolution of the fake webcam. We recommend using a small value "
+              "because of performance reasons, but this isn't as important as the real cam "
+              "resolution. Also, useful info: some web conference services like Jitsi ignore "
+              "webcams bellow 720p. The value must be a tuple with the structure: "
+              "(width, height). Example: --fake-cam-resolution 640 480")
+@click.option("--real-cam-fps", default=30, type=int,
+              help="The speed (frames per second) of the real webcam.")
+@click.option("--real-cam-device", default="/dev/video0",
+              help="The linux device in which the real cam exists.")
+@click.option("--fake-cam-device", default="/dev/video20",
+              help="The linux device in which the fake cam exists (the one created using "
+              "v4l2loopback.")
+@click.option("--model-name", default="mobilenet_quant4_100_stride16",
+              type=click.Choice(list(SegmenterModel.KNOWN_MODELS_URLS.keys()),
+                                case_sensitive=False),
+              help="The tensorflowjs model that will be used to detect people in the video. If "
+              "you have trouble with performance, you can try using "
+              "'mobilenet_quant4_075_stride16', which is a little bit faster")
+def main(background, use_gpu, real_cam_resolution, fake_cam_resolution, real_cam_fps,
+         real_cam_device, fake_cam_device, model_name):
     """
     Cli script.
     """
     viba = VirtualBackground(
         model=SegmenterModel(
-            model_name='mobilenet_quant4_100_stride16',
+            model_name=model_name,
             segmentation_threshold=0.7,
-            use_gpu=False,
+            use_gpu=use_gpu,
         ),
-        real_cam=Cam(device="/dev/video0", size=(640, 480), fps=30, is_real=True),
-        fake_cam=Cam(device="/dev/video20", size=(640, 480), fps=30, is_real=False),
-        background_path='./sample_background.jpg',
+        real_cam=Cam(
+            device=real_cam_device,
+            size=real_cam_resolution,
+            fps=real_cam_fps,
+            is_real=True,
+        ),
+        fake_cam=Cam(
+            device=fake_cam_device,
+            size=fake_cam_resolution,
+            fps=None,
+            is_real=False,
+        ),
+        background_path=background,
     )
     viba.run()
 
