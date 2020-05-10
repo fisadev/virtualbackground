@@ -165,8 +165,8 @@ inter-thread or inter-process communications, etc.
 
 This is heavily inspired in Benjamin Elder's [blog post](https://elder.dev/posts/open-source-virtual-background/). 
 Though I went the python-tensorflow way instead of the nodejs-tensorflow way, and async + threaded executor instead 
-of having separated containers and communications between them. Some parts are very similar, still (like the mask 
-application once is calculated).
+of having separated containers and communications between them. Some parts are very similar, still (like how the mask 
+is applied once it's calculated).
 
 Also, [this example](https://github.com/ajaichemmanam/simple_bodypix_python) by @ajaichemmanam was super useful to 
 understand how to import tensorflowjs models to python.
