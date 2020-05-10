@@ -134,7 +134,10 @@ Currently ViBa works like this:
 It has a loop which is capturing frames, applying a "mask" to remove the background leaving only the humans, 
 then mixing the humans with the fake background, and finally sending the constructed "frame" to the fake webcam.
 
-Ideally, for each new frame we get from the real webcam, we would want to calculate the mask again, because the 
+That "mask" is calculated using the Bodypix models published by the folk from Tensorflow. It's basically an
+artificial neural network able to detect and segment people in images.
+
+Ideally, for each new frame we get from the real webcam we would want to calculate the mask again, because the 
 persons are moving around. But the mask calculation is sadly too slow to do in real time. So instead we do this: 
 there's a second **concurrent** loop which is always looking at the newest frame, and calculating the mask for it, 
 as fast as it can.
