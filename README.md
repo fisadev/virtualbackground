@@ -160,3 +160,15 @@ Finally, if you want to get really technical: why async? Because when running on
 is being calculated. Awaiting that with a thread executor (because sadly, tensorflow isn't async), means we can keep 
 doing all the other stuff with the CPU while the mask is bussy in the GPU, and we don't have to worry about locks, 
 inter-thread or inter-process communications, etc.
+
+# Acknowledgments
+
+This is heavily inspired in Benjamin Elder's [blog post](https://elder.dev/posts/open-source-virtual-background/). 
+Though I went the python-tensorflow way instead of the nodejs-tensorflow way, and async + threaded executor instead 
+of having separated containers and communications between them. Some parts are very similar, still (like the mask 
+application once is calculated).
+
+Also, [this example](https://github.com/ajaichemmanam/simple_bodypix_python) by @ajaichemmanam was super useful to 
+understand how to import tensorflowjs models to python.
+
+And of course, a huge thanks to the people who built the [Bodypix models](https://github.com/tensorflow/tfjs-models/tree/master/body-pix).
