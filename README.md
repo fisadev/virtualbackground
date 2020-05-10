@@ -2,7 +2,7 @@
 
 Fake webcam that replaces your background with a custom image of your choice.
 
-This is a **work in progress**, although it does work if you have all the right dependencies installed.
+This is a **work in progress**, but it is already usable :)
 
 # Installation
 
