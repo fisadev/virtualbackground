@@ -126,3 +126,31 @@ But it comes at the cost of needing to install complex stuff. You will need:
 - CUDA 10.0 or higher.
 
 If you have both, then you can install the extra python dependencies from `gpu_requirements.txt`, and use the `--gpu` parameter with `viba.py`.
+
+# Some implementation details, and understanding speed
+
+Currently ViBa works like this:
+
+It has a loop which is capturing frames, applying a "mask" to remove the background leaving only the humans, 
+then mixing the humans with the fake background, and finally sending the constructed "frame" to the fake webcam.
+
+Ideally, for each new frame we get from the real webcam, we would want to calculate the mask again, because the 
+persons are moving around. But the mask calculation is sadly too slow to do in real time. So instead we do this: 
+there's a second **concurrent** loop which is always looking at the newest frame, and calculating the mask for it, 
+as fast as it can.
+
+The main frames loop uses the latest calculated mask, and the masks loop uses the newset frame it fins when starting
+a new mask. That means that most of the time, the frames are cropped using a relatively recent mask, which in real 
+life means (most of the time) a relatively similar frame. 
+
+So ViBa will work ok if you don't move too fast in front of the camera. If you do, the mask will get "obsolete" too 
+fast, and we it won't be able to calculate masks fast enough to follow you around. For a typical conference call
+this isn't a problem, but don't try to do acrobatics with an intergalactic background, because people will just see a 
+confusing and slow moving space-themed blob :)
+
+Of course, this depends a lot on the performance of your computer, and wether you are using a GPU or not.
+
+Finally, if you want to get really technical: why async? Because when running on GPU the CPU is idle while the mask 
+is being calculated. Awaiting that with a thread executor (because sadly, tensorflow isn't async), means we can keep 
+doing all the other stuff with the CPU while the mask is bussy in the GPU, and we don't have to worry about locks, 
+inter-thread or inter-process communications, etc.
