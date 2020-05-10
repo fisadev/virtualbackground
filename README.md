@@ -101,6 +101,14 @@ Options:
                                   'mobilenet_quant4_075_stride16', which is a
                                   little bit faster.
 
+  --segmentation-threshold FLOAT RANGE
+                                  How much of the image will be considered as
+                                  a 'person'. A lower value means less
+                                  confidence required, so more regions will be
+                                  considered as a 'person'. A higher value
+                                  means the opposite. Must be a value between
+                                  0 and 1.
+
   --debug                         Debug mode: print a lot of extra text during
                                   execution, to debug issues.
 ```

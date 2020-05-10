@@ -349,10 +349,14 @@ class VirtualBackground:
               help="The tensorflowjs model that will be used to detect people in the video. If "
               "you have trouble with performance, you can try using "
               "'mobilenet_quant4_075_stride16', which is a little bit faster.")
+@click.option("--segmentation-threshold", default=0.7, type=click.FloatRange(0, 1),
+              help="How much of the image will be considered as a 'person'. A lower value means "
+              "less confidence required, so more regions will be considered as a 'person'. A "
+              "higher value means the opposite. Must be a value between 0 and 1.")
 @click.option('--debug', is_flag=True,
               help="Debug mode: print a lot of extra text during execution, to debug issues.")
 def main(background, use_gpu, real_cam_resolution, fake_cam_resolution, real_cam_fps,
-         real_cam_device, fake_cam_device, model_name, debug):
+         real_cam_device, fake_cam_device, model_name, segmentation_threshold, debug):
     """
     Cli script for Viba, the virtual background utility.
     """
@@ -362,7 +366,7 @@ def main(background, use_gpu, real_cam_resolution, fake_cam_resolution, real_cam
     viba = VirtualBackground(
         model=SegmenterModel(
             model_name=model_name,
-            segmentation_threshold=0.7,
+            segmentation_threshold=segmentation_threshold,
             use_gpu=use_gpu,
         ),
         real_cam=Cam(
