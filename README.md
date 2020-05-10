@@ -142,7 +142,7 @@ persons are moving around. But the mask calculation is sadly too slow to do in r
 there's a second **concurrent** loop which is always looking at the newest frame, and calculating the mask for it, 
 as fast as it can.
 
-The main frames loop uses the latest calculated mask, and the masks loop uses the newset frame when building
+The main frames loop uses the latest calculated mask, and the masks loop uses the newest frame when building
 a new mask. That means that most of the time, the frames are cropped using a relatively recent mask, which in real 
 life means (most of the time) a relatively similar frame. 
 
