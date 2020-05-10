@@ -74,6 +74,8 @@ class Cam:
         Read a real frame from a real camera.
         """
         assert self.is_real
+        # the capturer can return None when the camera is being used by someone else, we just
+        # keep trying until we get a real frame
         frame = None
         while frame is None:
             await sleep(0)
@@ -149,6 +151,9 @@ class SegmenterModel:
         else:
             logger.info("TensorflowJS model not present, will download it")
 
+            # the model is a json file, but that file points to additional weight files, so we
+            # have to first get the json, read it, and then we know which extra files we need to
+            # get too
             logger.info("Downloading model definition...")
             model_url = self.BASE_MODELS_URL.format(self.KNOWN_MODELS_URLS[self.model_name])
             download_file(
@@ -156,6 +161,7 @@ class SegmenterModel:
                 self.model_path,
             )
 
+            # download the extra weight files
             parent_model_url = '/'.join(model_url.split('/')[:-1]) + '/{}'
             definition = json.loads(self.model_path.read_text())
             for weights_manifest in definition['weightsManifest']:
@@ -175,9 +181,15 @@ class SegmenterModel:
                 input_tensor = self.graph.get_tensor_by_name('sub_2:0')
                 results = sess.run(['float_segments:0'], feed_dict={input_tensor: inputs})
 
+                # results will contain only one result, because we are asking for a single output
+                # tensor (the segments)
+                # and we also know we have only one image, so there will be only one result. So we
+                # can remove the "image index" dimension with squeeze
                 segments = np.squeeze(results[0], 0)
 
+            # convert the segment values to the range between (0, 1)
             segment_scores = tf.sigmoid(segments)
+            # and then consider only as human those regions above the segmentation threshold
             mask = tf.math.greater(segment_scores, tf.constant(self.segmentation_threshold))
             segmentation_mask = mask.eval()
 
@@ -193,11 +205,16 @@ class SegmenterModel:
         """
         original_height, original_width, _ = image.shape
 
+        # normalization of inputs, and construction of a "samples" set from the single image we
+        # have
         image = (image / 127.) - 1
         image_as_inputs = np.expand_dims(image, 0)
 
         await sleep(0)
 
+        # the model is a big chunk of blocking code, but if we are using GPU, then we can actually
+        # leave it running and keep doing more stuff. That's why we use asyncio combined with a
+        # threaded executor for the model
         loop = get_running_loop()
         segmentation_mask = await loop.run_in_executor(None, self.apply_model, image_as_inputs)
         segmentation_mask = cv2.resize(segmentation_mask, (original_width, original_height))
@@ -255,6 +272,7 @@ class VirtualBackground:
 
             self.frames_count += 1
 
+            # print useful speed stats every 10 seconds or so
             seconds_since_stats = (datetime.now() - last_stats_at).total_seconds()
             if seconds_since_stats >= 10:
                 logger.info("Camera working at %.2f fps, and %.2f masks per second",
