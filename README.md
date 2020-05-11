@@ -128,7 +128,7 @@ But it comes at the cost of needing to install complex stuff. You will need:
 - Nvidia drivers able to run CUDA 10.0 or higher (that means, at least drivers version 410.48).
 - CUDA 10.0 or higher.
 
-If you have both, then you can install the extra python dependencies from `gpu_requirements.txt`, and use the `--gpu` parameter with `viba.py`.
+If you have both, then you can install the extra python dependencies from `gpu_requirements.txt`, and use the `--use-gpu` parameter with `viba.py`.
 
 # Some implementation details, and understanding speed
 
