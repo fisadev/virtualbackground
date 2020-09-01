@@ -19,9 +19,7 @@ This is done using the `v4l2loopback-dkms` package. On Debian or Ubuntu, you can
     sudo apt-get install v4l2loopback-dkms
 
     # create a config so the module is loaded and a cam is created on boot
-    echo options v4l2loopback devices=1 video_nr=20 \
-    card_label="viba_cam" exclusive_caps=1 | sudo tee -a \
-    /etc/modprobe.d/viba_cam.conf
+    echo options v4l2loopback devices=1 video_nr=20 card_label="viba_cam" exclusive_caps=1 | sudo tee -a /etc/modprobe.d/viba_cam.conf
     echo v4l2loopback | sudo tee -a /etc/modules-load.d/viba_cam.conf
 
     # enable the module for the first time
