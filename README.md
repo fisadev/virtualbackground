@@ -31,6 +31,8 @@ This means that from now on, you will have a `/dev/video20` device that simulate
 
 ### 2. Python libs
 
+**WARNING**: python 3.7 or higher required :)
+
 Then you need to install the dependencies in the `requirements.txt` file, as usual with python. 
 A virtualenv is recommended:
 
