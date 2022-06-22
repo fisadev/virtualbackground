@@ -1,5 +1,5 @@
 click==7.1.2
-numpy==1.18.3
+numpy==1.22.0
 opencv-python==4.2.0.32
 requests==2.23.0
 pyfakewebcam==0.1.0
