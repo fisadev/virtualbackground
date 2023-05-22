@@ -1,7 +1,7 @@
 click==7.1.2
 numpy==1.18.3
 opencv-python==4.2.0.32
-requests==2.23.0
+requests==2.31.0
 pyfakewebcam==0.1.0
 tensorflow-cpu==2.2.0
 tensorflowjs==1.7.4.post1
